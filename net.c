@@ -12,6 +12,17 @@ int type;
 		exit(1);
 	}
 }
+
+init_sockaddrin_6(addr, port)
+struct sockaddr_in6* addr;
+int port;
+{
+	const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
+	addr->sin6_family = AF_INET6;
+	addr->sin6_port = htons(port);
+	addr->sin6_addr = in6addr_any;
+}
+
 bind_socket(fd, addr, slen)
 int fd;
 const struct sockaddr* addr;

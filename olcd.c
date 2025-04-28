@@ -16,7 +16,10 @@ static open_descriptors()
 run_olc_daemon()
 {
 	pid_t child, sid;
-	int i;
+	int i, fd, ffd;
+	struct sockaddr_in6 s;
+	socklen_t slen;
+
 	close_descriptors();
 	open_descriptors();
 	openlog("main.c", LOG_PID, LOG_USER);
@@ -45,11 +48,24 @@ run_olc_daemon()
 		}
 		if (child == 0)
 		{
+#if 1
+			create_socket(&fd, AF_INET6, SOCK_STREAM);
+			init_sockaddrin_6(&s, olcd_port);
+			slen = sizeof(s);
+			bind_socket(fd, (const struct sockaddr*)&s, slen);
+			make_socket_listening(fd, log);
+			accept_connection(&ffd, fd, NULL, NULL);			/*later provide structure to get an addr*/
+#endif			
 			for (i = 0; i < NUM_OF_CYCLES; i++)
 			{
 				syslog(LOG_INFO, "Infinite loop\n");
 				sleep(SLEEP_T);
 			}
+#if 1
+			reuse_port(fd);
+			close_socket(fd);
+			close(ffd);
+#endif
 			closelog();
 			_exit(0);
 		}

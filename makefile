@@ -6,6 +6,6 @@ olcd.o:olcd.c
 	$(CC) $(CCFLAGS) -g -c -O $< -o $@
 olc:olc.c net.o
 	$(CC) $(CCFLAGS) -g -O $^ -o $@	
-main:main.c olcd.o
+main:main.c olcd.o net.o
 	$(CC) $(CCFLAGS) -g -O $^ -o $@
 

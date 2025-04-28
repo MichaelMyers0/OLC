@@ -22,6 +22,7 @@ enum {log = 5};
 enum {num_of_clients_to_server = 5};            /*for now use values that are less than 10*/
 
 create_socket(fd, domain, type);
+init_sockaddrin_6(addr, port);
 bind_socket(fd, addr, slen);
 connect_to_a_server(fd, addr, slen);
 accept_connection(fd, sfd, addr, slen);
