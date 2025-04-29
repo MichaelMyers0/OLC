@@ -24,8 +24,10 @@ run_olc_daemon()
 	ssize_t cnt;
 
 	qinit(&q);
+#if 0	
 	close_descriptors();
 	open_descriptors();
+#endif	
 	openlog("main.c", LOG_PID, LOG_USER);
 	errno = 0;
 	child = fork();
@@ -68,6 +70,10 @@ run_olc_daemon()
 					syslog(LOG_ERR, "ERROR: olcd failed to recieve a message");
 					break;
 				}
+#if 1				
+				if (cnt == 0)
+					break;
+#endif				
 				if (cnt)
 				{
 					*(olcd_buf + cnt) = 0;
@@ -75,7 +81,9 @@ run_olc_daemon()
 					printf("MESSAGE - %s\n", olcd_buf);
 					*olcd_buf = 0;
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
+#if 1					
 					break;
+#endif					
 				}
 			}
 			reuse_port(fd);

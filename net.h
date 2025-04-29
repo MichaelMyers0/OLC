@@ -15,7 +15,7 @@
 /*s.sin6_addr = in6addr_any*/
 /*fill all thos fields manually*/
 enum {olc_client1_port = 5005};
-enum {olcd_port = 6004};
+enum {olcd_port = 7000};
 enum {server_port = 6003};
 enum {buffer_cap = 1024};
 enum {sleep_t = 15};

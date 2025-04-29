@@ -1,5 +1,6 @@
 #include "net.h"
 #include "olc_mod.h"
+enum {olc_client2_port = 5006};
 #if 0
 static olc_show(msg)
 char* msg;
@@ -18,7 +19,7 @@ main()
 	socklen_t slen, sdlen;
 	ssize_t cnt;
 
-	init_sockaddrin_6(&s, olc_client1_port);
+	init_sockaddrin_6(&s, olc_client2_port);
 	slen = sizeof(s);
 	init_sockaddrin_6(&sd, olcd_port);
 	sdlen = sizeof(sd);

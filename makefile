@@ -10,6 +10,8 @@ olcd.o:olcd.c
 	$(CC) $(CCFLAGS) -g -c -O $< -o $@
 olc:olc.c net.o olc_mod.o
 	$(CC) $(CCFLAGS) -g -O $^ -o $@	
+olc2:olc2.c net.o olc_mod.o
+	$(CC) $(CCFLAGS) -g -O $^ -o $@	
 main:main.c olcd.o net.o queue.o
 	$(CC) $(CCFLAGS) -g -O $^ -o $@
 
