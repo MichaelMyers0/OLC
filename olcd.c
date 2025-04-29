@@ -17,13 +17,14 @@ static open_descriptors()
 run_olc_daemon()
 {
 	pid_t child, sid;
-	int i, fd, ffd;
+	int i, fd, ffd, ok;
 	struct sockaddr_in6 s;
 	socklen_t slen;
 	ssize_t cnt;
-
+#if 0
 	close_descriptors();
 	open_descriptors();
+#endif	
 	openlog("main.c", LOG_PID, LOG_USER);
 	errno = 0;
 	child = fork();
@@ -56,6 +57,7 @@ run_olc_daemon()
 			bind_socket(fd, (const struct sockaddr*)&s, slen);
 			make_socket_listening(fd, log);
 			accept_connection(&ffd, fd, NULL, NULL);			/*later provide structure to get an addr*/
+			ok = 0;
 			for (;;)
 			{
 				errno = 0;
