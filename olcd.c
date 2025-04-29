@@ -1,4 +1,5 @@
 #include "olcd.h"
+static char olcd_buf[buffer_cap];
 static close_descriptors();
 static open_descriptors();
 static close_descriptors()
@@ -19,6 +20,7 @@ run_olc_daemon()
 	int i, fd, ffd;
 	struct sockaddr_in6 s;
 	socklen_t slen;
+	ssize_t cnt;
 
 	close_descriptors();
 	open_descriptors();
@@ -48,24 +50,32 @@ run_olc_daemon()
 		}
 		if (child == 0)
 		{
-#if 1
 			create_socket(&fd, AF_INET6, SOCK_STREAM);
 			init_sockaddrin_6(&s, olcd_port);
 			slen = sizeof(s);
 			bind_socket(fd, (const struct sockaddr*)&s, slen);
 			make_socket_listening(fd, log);
 			accept_connection(&ffd, fd, NULL, NULL);			/*later provide structure to get an addr*/
-#endif			
-			for (i = 0; i < NUM_OF_CYCLES; i++)
+			for (;;)
 			{
-				syslog(LOG_INFO, "Infinite loop\n");
-				sleep(SLEEP_T);
+				errno = 0;
+				cnt = read(ffd, olcd_buf, buffer_cap);
+				if (cnt == -1)
+				{
+					syslog(LOG_ERR, "ERROR: olcd failed to recieve a message");
+					break;
+				}
+				if (cnt)
+				{
+					*(olcd_buf + cnt) = 0;
+					printf("MESSAGE_ - %s\n", olcd_buf);
+					syslog(LOG_INFO, "olcd recieve a message from a client\n");
+					break;
+				}
 			}
-#if 1
 			reuse_port(fd);
 			close_socket(fd);
 			close(ffd);
-#endif
 			closelog();
 			_exit(0);
 		}

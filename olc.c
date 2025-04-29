@@ -16,12 +16,18 @@ int len;
 		perror("olc_ask()\n");
 		exit(1);
 	}
+	*(buf + cnt) = 0;
 }
 
-static olc_send(msg)
+static olc_send(fd, msg, num_of_bytes)
+int fd;
 const char* msg;	
+int* num_of_bytes;
 {
-
+	size_t len;
+	len = strlen(msg);
+	errno = 0;
+	*num_of_bytes = write(fd, msg, len);
 }
 
 static olc_show(msg)
@@ -34,33 +40,33 @@ static char olc_buf[buffer_cap];
 
 main()
 {
-	int fd;
+	int fd, num_of_bytes;
 	struct sockaddr_in6 s, sd;
 	const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
 	socklen_t slen, sdlen;
+	ssize_t cnt;
 
-#if 0	
-	s.sin6_family = AF_INET6;
-	s.sin6_port = htons(olc_client1_port);
-	s.sin6_addr = in6addr_any;
-	slen = sizeof(s);
-
-	sd.sin6_family = AF_INET6;
-	sd.sin6_port = htons(olcd_port);
-	sd.sin6_addr = in6addr_any;
-	sdlen = sizeof(sd);
-#else
 	init_sockaddrin_6(&s, olc_client1_port);
 	slen = sizeof(s);
 	init_sockaddrin_6(&sd, olcd_port);
 	sdlen = sizeof(sd);
-#endif
 
 	create_socket(&fd, AF_INET6, SOCK_STREAM);
 	bind_socket(fd, (const struct sockaddr*)&s, slen);
 	connect_to_a_server(fd, (const struct sockaddr*)&sd, sdlen);
-	sleep(5);
+	sleep(sleep_t);
 	olc_ask(olc_buf, buffer_cap);
+	for (;;)
+	{
+		olc_send(fd, olc_buf, &num_of_bytes);
+		if (num_of_bytes)
+			break;
+		if (num_of_bytes == -1)
+		{
+			fprintf(stderr, "ERROR: Failed to send a message to the olcd daemon\n");
+			break;
+		}
+	}
 	reuse_port(fd);
 	close_socket(fd);
 

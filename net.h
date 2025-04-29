@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <sys/types.h>
 /*const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;*/
 /*s.sin6_family = AF_INET;*/
 /*s.sin6_port = htons()*/
