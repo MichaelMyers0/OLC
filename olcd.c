@@ -19,14 +19,13 @@ run_olc_daemon()
 {
 	pid_t child, sid;
 	int i, fd, ffd, ok;
-	struct sockaddr_in6 s;
+	struct sockaddr_in6 s, dst;
 	socklen_t slen;
 	ssize_t cnt;
+
 	qinit(&q);
-#if 0
 	close_descriptors();
 	open_descriptors();
-#endif	
 	openlog("main.c", LOG_PID, LOG_USER);
 	errno = 0;
 	child = fork();
@@ -58,7 +57,7 @@ run_olc_daemon()
 			slen = sizeof(s);
 			bind_socket(fd, (const struct sockaddr*)&s, slen);
 			make_socket_listening(fd, log);
-			accept_connection(&ffd, fd, NULL, NULL);			/*later provide structure to get an addr*/
+			accept_connection(&ffd, fd, (struct sockaddr*)&dst, &slen);
 			ok = 0;
 			for (;;)
 			{
@@ -73,7 +72,7 @@ run_olc_daemon()
 				{
 					*(olcd_buf + cnt) = 0;
 					qputs(&q, olcd_buf);
-					printf("MESSAGE_ - %s\n", olcd_buf);
+					/*printf("MESSAGE_ - %s\n", olcd_buf);*/
 					*olcd_buf = 0;
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
 					break;
