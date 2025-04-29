@@ -78,7 +78,6 @@ run_olc_daemon()
 				{
 					*(olcd_buf + cnt) = 0;
 					qputs(&q, olcd_buf);
-					printf("MESSAGE - %s\n", olcd_buf);
 					*olcd_buf = 0;
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
 #if 1					
