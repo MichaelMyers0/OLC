@@ -1,5 +1,7 @@
 #include "net.h"
+#include "olc_mod.h"
 
+#if 0
 static olc_ask(buf, len);
 static olc_send(msg);
 static old_show(msg);
@@ -35,6 +37,7 @@ char* msg;
 {
 
 }
+#endif
 
 static char olc_buf[buffer_cap];
 
