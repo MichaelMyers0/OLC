@@ -1,4 +1,5 @@
 #include "olcd.h"
+static queue_t q;
 static char olcd_buf[buffer_cap];
 static close_descriptors();
 static open_descriptors();
@@ -21,6 +22,7 @@ run_olc_daemon()
 	struct sockaddr_in6 s;
 	socklen_t slen;
 	ssize_t cnt;
+	qinit(&q);
 #if 0
 	close_descriptors();
 	open_descriptors();
@@ -70,7 +72,9 @@ run_olc_daemon()
 				if (cnt)
 				{
 					*(olcd_buf + cnt) = 0;
+					qputs(&q, olcd_buf);
 					printf("MESSAGE_ - %s\n", olcd_buf);
+					*olcd_buf = 0;
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
 					break;
 				}
