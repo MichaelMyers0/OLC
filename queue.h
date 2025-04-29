@@ -7,6 +7,7 @@
 #include <sys/types.h>
 enum {capacity = 1024};
 typedef char string_t[capacity];
+typedef char (*pointer_t)[capacity];
 typedef struct
 {
 	string_t q[capacity];
@@ -15,5 +16,5 @@ typedef struct
 }queue_t;
 qinit(q);
 qputs(q, s);
-qgets();
+qgets(q, p);
 #endif
