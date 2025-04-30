@@ -81,9 +81,6 @@ run_olc_daemon()
 					i++;
 					printf("DEBUG_PRINT - %d\n", i);
 					close(ffd);
-#if 0					
-					break;
-#endif					
 				}
 				if (i == num_of_clients_to_server - 3)
 				{
@@ -93,11 +90,6 @@ run_olc_daemon()
 					break;
 				}
 			}
-#if 0			
-			reuse_port(fd);
-			close_socket(fd);	
-			closelog();
-#endif			
 			_exit(0);
 		}
 		else
