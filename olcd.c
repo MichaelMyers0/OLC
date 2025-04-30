@@ -69,12 +69,8 @@ run_olc_daemon()
 					syslog(LOG_ERR, "ERROR: olcd failed to recieve a message");
 					break;
 				}
-				if (i == 2)
+				if (i == num_of_clients_to_server - 3)
 					break;
-#if 0				
-				if (cnt == 0)
-					break;
-#endif				
 				if (cnt)
 				{
 					*(olcd_buf + cnt) = 0;
