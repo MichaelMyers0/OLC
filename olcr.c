@@ -13,7 +13,25 @@ int port;
 
 olcr_recieve_question()
 {
-
+       int fd;
+        ssize_t cnt;
+        accept_connection(&fd, olcr_fd, NULL, NULL);
+        for (;;)
+        {
+                errno = 0;
+                cnt = read(fd, buffer, buffer_cap);
+                if (cnt == -1)
+                {
+                        olcr_reset();
+                        exit(1);
+                }
+                if (cnt || !cnt)
+                {
+                        *(buffer + cnt) = 0;
+                        printf("DEBUG_PRINT - %s\n", buffer);
+                        break;
+                }
+        }
 }
 
 olcr_answer()
