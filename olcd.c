@@ -58,10 +58,7 @@ run_olc_daemon()
 			init_sockaddrin_6(&s, olcd_port);
 			slen = sizeof(s);
 			bind_socket(fd, (const struct sockaddr*)&s, slen);
-			make_socket_listening(fd, log);
-#if 0			
-			accept_connection(&ffd, fd, (struct sockaddr*)&dst, &slen);
-#endif			
+			make_socket_listening(fd, log);	
 			for (;;)
 			{
 				accept_connection(&ffd, fd, (struct sockaddr*)&dst, &slen);
@@ -89,20 +86,14 @@ run_olc_daemon()
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
 					i++;
 					printf("DEBUG_PRINT - %d\n", i);
-					/*sleep(sleep_t);*/
 #if 0					
 					break;
 #endif					
 				}
-#if 1
-				close(ffd);
-#endif				
+				close(ffd);		
 			}
 			reuse_port(fd);
-			close_socket(fd);
-#if 1			
-			close(ffd);
-#endif			
+			close_socket(fd);	
 			closelog();
 			_exit(0);
 		}
