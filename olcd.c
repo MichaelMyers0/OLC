@@ -18,7 +18,7 @@ static open_descriptors()
 run_olc_daemon()
 {
 	pid_t child, sid;
-	int i, fd, ffd, ok;
+	int i, fd, ffd;
 	struct sockaddr_in6 s, dst;
 	socklen_t slen;
 	ssize_t cnt;
@@ -60,8 +60,12 @@ run_olc_daemon()
 			bind_socket(fd, (const struct sockaddr*)&s, slen);
 			make_socket_listening(fd, log);
 			accept_connection(&ffd, fd, (struct sockaddr*)&dst, &slen);
-			ok = 0;
+#if 0			
 			for (;;)
+#else
+			i = 0;	
+			while (i < num_of_clients_to_server - 3)	
+#endif				
 			{
 				errno = 0;
 				cnt = read(ffd, olcd_buf, buffer_cap);
@@ -70,20 +74,26 @@ run_olc_daemon()
 					syslog(LOG_ERR, "ERROR: olcd failed to recieve a message");
 					break;
 				}
-#if 1				
+#if 0				
 				if (cnt == 0)
 					break;
 #endif				
 				if (cnt)
 				{
 					*(olcd_buf + cnt) = 0;
+#if 1
+					printf("MESSAGE - %s\n", olcd_buf);
+#endif					
 					qputs(&q, olcd_buf);
 					*olcd_buf = 0;
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
-#if 1					
+					i++;
+					printf("DEBUG_PRINT - %d\n", i);
+#if 0					
 					break;
 #endif					
 				}
+
 			}
 			reuse_port(fd);
 			close_socket(fd);
