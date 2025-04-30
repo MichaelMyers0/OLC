@@ -6,8 +6,8 @@ int port;
 	struct sockaddr_in6 s;
 	socklen_t slen;
 	create_socket(&olcr_fd, AF_INET6, SOCK_STREAM);
-	slen = sizeof(s);
 	init_sockaddrin_6(&s, port);
+	slen = sizeof(s);
 	bind_socket(olcr_fd, (const struct sockaddr*)&s, slen);
 }
 
