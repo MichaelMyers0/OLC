@@ -69,8 +69,6 @@ run_olc_daemon()
 					syslog(LOG_ERR, "ERROR: olcd failed to recieve a message");
 					break;
 				}
-				if (i == num_of_clients_to_server - 3)
-					break;
 				if (cnt)
 				{
 					*(olcd_buf + cnt) = 0;
@@ -82,15 +80,24 @@ run_olc_daemon()
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
 					i++;
 					printf("DEBUG_PRINT - %d\n", i);
+					close(ffd);
 #if 0					
 					break;
 #endif					
 				}
-				close(ffd);		
+				if (i == num_of_clients_to_server - 3)
+				{
+					reuse_port(fd);
+					close_socket(fd);
+					closelog();
+					break;
+				}
 			}
+#if 0			
 			reuse_port(fd);
 			close_socket(fd);	
 			closelog();
+#endif			
 			_exit(0);
 		}
 		else
