@@ -1,6 +1,7 @@
 #include "olcd.h"
 static queue_t q;
 static char olcd_buf[buffer_cap];
+static handle();
 static close_descriptors();
 static open_descriptors();
 static close_descriptors()
@@ -15,6 +16,10 @@ static open_descriptors()
 	open("/dev/null", O_WRONLY);
 	open("/dev/null", O_WRONLY);
 }
+static handle()
+{
+
+}
 run_olc_daemon()
 {
 	pid_t child, sid;
@@ -24,10 +29,8 @@ run_olc_daemon()
 	ssize_t cnt;
 
 	qinit(&q);
-#if 0	
 	close_descriptors();
 	open_descriptors();
-#endif	
 	openlog("main.c", LOG_PID, LOG_USER);
 	errno = 0;
 	child = fork();
@@ -72,14 +75,10 @@ run_olc_daemon()
 				if (cnt)
 				{
 					*(olcd_buf + cnt) = 0;
-#if 1
-					printf("MESSAGE - %s\n", olcd_buf);
-#endif					
 					qputs(&q, olcd_buf);
 					*olcd_buf = 0;
 					syslog(LOG_INFO, "olcd recieve a message from a client\n");
 					i++;
-					printf("DEBUG_PRINT - %d\n", i);
 					close(ffd);
 				}
 				if (i == num_of_clients_to_server - 3)
