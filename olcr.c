@@ -1,5 +1,22 @@
 #include "olcr.h"
 static olcr_fd;
+static fd;
+static char buf[buffer_cap];
+static answer(buf);
+static answer(buf)
+char* buf;
+{
+	ssize_t cnt;
+	errno = 0;
+	cnt = read(STDIN_FILENO, buf, buffer_cap);
+	if (cnt == -1)
+	{
+		perror("Failed to answer - answer()\n");
+		exit(6);
+	}
+	*(buf + cnt) = 0;
+}
+
 olcr_init(port)
 int port;
 {
@@ -13,22 +30,21 @@ int port;
 
 olcr_recieve_question()
 {
-       int fd;
         ssize_t cnt;
         accept_connection(&fd, olcr_fd, NULL, NULL);
         for (;;)
         {
                 errno = 0;
-                cnt = read(fd, buffer, buffer_cap);
+                cnt = read(fd, buf, buffer_cap);
                 if (cnt == -1)
                 {
                         olcr_reset();
-                        exit(1);
+                        exit(3);
                 }
                 if (cnt || !cnt)
                 {
-                        *(buffer + cnt) = 0;
-                        printf("DEBUG_PRINT - %s\n", buffer);
+                        *(buf + cnt) = 0;
+                        printf("DEBUG_PRINT Question- %s\n", buf);
                         break;
                 }
         }
@@ -36,11 +52,27 @@ olcr_recieve_question()
 
 olcr_answer()
 {
-
+	ssize_t cnt;
+	size_t len;
+	answer(buf);
+	len = strlen(buf);
+	for (;;)
+	{
+		errno = 0;
+		cnt = write(fd, buf, len);
+		if (cnt == -1)
+		{
+			perror("olcr_answer() -> failed to answer\n");
+			exit(4);
+		}
+		if (cnt)
+			break;
+	}
 }
 
 olcr_reset()
 {
 	reuse_port(olcr_fd);
 	close_socket(olcr_fd);
+	close(fd);
 }
